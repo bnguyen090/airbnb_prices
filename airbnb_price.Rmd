@@ -16,20 +16,35 @@ library(crosstalk)
 Airbnb_Listings <- read_csv("Airbnb Listings.csv")
 Airbnb_reorder <- Airbnb_Listings %>%
   mutate(
-    neighbourhood = fct_reorder(`Type 1`, Total, .fun = median)
+    neighbourhood = fct_reorder(neighbourhood, price, .fun = median)
   )
 shared_aribnb <- SharedData$new(Airbnb_reorder)
 
 ```
 
-
-
+Sidebar {.sidebar}
+----------------------
 ```{r}
-P <- Airbnb_Listings %>%
+filter_select("Neighbuorhoods", "Neighbourhood", shared_aribnb, ~neighbourhood)
+```
+
+
+Column
+--------------------------
+```{r}
+P <- shared_aribnb %>%
   ggplot() + geom_point(mapping = aes(y = price, x = neighbourhood )) +
   theme(axis.text.x = element_text(size = 5,angle = 90, vjust = 1, hjust=1))
+ggplotly(P)
+
+```
+Column 2
+--------------------------
+```{r}
+P <- shared_aribnb %>%
+  ggplot() + geom_point(mapping = aes(x = longitude, y = latitude, alpha = 0.1 ))
 ggplotly(P)
 ```
 
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
